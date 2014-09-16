@@ -15,10 +15,8 @@ import java.sql.SQLException;
 import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -56,20 +54,19 @@ import java.util.logging.Logger;
  */
 public class StylometricAnalysisMain {
 
-    private Set<String> functionWords;			// Contains the function words we are using
+    private List<String> functionWords;			// Contains the function words we are using
     private List<Alias> aliases;				// The aliases we are interested in to compare        
     private List<List<Float>> featVectorForAllAliases;
 
     public StylometricAnalysisMain() {
         loadFunctionWords(IOProperties.FUNCTION_WORDS);
-        //loadDataFile(IOProperties.INDIVIDUAL_USER_FILE_PATH);
+        loadDataFile(IOProperties.INDIVIDUAL_USER_FILE_PATH);
         aliases = new ArrayList<>();
     }
-    
-    private void loadDataFile(String path){
-        System.out.println(getClass().getResource("../../../").getFile());
-         String filepath = getClass().getResource("../../../").getFile() + path;
-         System.out.println(filepath);
+
+    private void loadDataFile(String path) {
+        String filepath = System.getProperty("user.home") + path;
+        System.out.println(filepath);
     }
 
     public List<Float> executeAnalysis(String ID) throws IOException, SQLException {
@@ -106,6 +103,9 @@ public class StylometricAnalysisMain {
     public double executeStylo(List<Alias> aliasList) throws SQLException {
         this.aliases = aliasList;
         createFeatureVectors();
+        System.out.println("User1: " + aliases.get(0).getFeatureVector());
+        System.out.println("User2: " + aliases.get(1).getFeatureVector());
+        
         double stylo = compareFeatureVectors(aliases.get(0).getFeatureVector(), aliases.get(1).getFeatureVector());
         return stylo;
     }
@@ -135,10 +135,11 @@ public class StylometricAnalysisMain {
 
     /**
      * Load the list of function words from file
+     *
      * @param path
      */
     private void loadFunctionWords(String path) {
-        functionWords = new LinkedHashSet<>();
+        functionWords = new ArrayList<>();
         BufferedReader br;
         try {
             path = System.getProperty("user.home") + File.separator + path;
@@ -147,7 +148,10 @@ public class StylometricAnalysisMain {
 
             String strLine;
             while ((strLine = br.readLine()) != null) {
-                functionWords.add(strLine);
+                String trimmedLine = strLine.trim();
+                if (!"".equals(trimmedLine)) {
+                    functionWords.add(trimmedLine.trim());
+                }
             }
             br.close();
         } catch (Exception e) {
@@ -163,13 +167,16 @@ public class StylometricAnalysisMain {
      */
     public ArrayList<Float> countFunctionWords(List<String> words) {
         ArrayList<Float> tmpCounter = new ArrayList<>(Collections.nCopies(functionWords.size(), 0.0f));	// Initialize to zero
-        for (int i = 0; i < words.size(); i++) {
-            String word = words.get(i).toLowerCase();
-            //System.out.println(word);
-            if (functionWords.contains(word)) {
-                float value = tmpCounter.get(i);
-                value++;
-                tmpCounter.set(i, value);
+        
+        for (String word1 : words) {
+            String word = word1.toLowerCase();
+            for (int j = 0; j < functionWords.size(); j++) {
+                if (word.equals(functionWords.get(j))) {
+                    float value = tmpCounter.get(j);
+                    value++;
+                    tmpCounter.set(j, value);
+                    break;
+                }
             }
         }
         // "Normalize" the values by dividing with length of the post (nr of words in the post)
@@ -188,7 +195,7 @@ public class StylometricAnalysisMain {
      */
     public ArrayList<Float> countCharactersAZ(String post) {
         post = post.toLowerCase();	// Upper or lower case does not matter, so make all letters lower case first...
-        char[] ch = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
+        char[] ch = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'ö', 'å', 'ä'};
         ArrayList<Float> tmpCounter = new ArrayList<>(Collections.nCopies(ch.length, 0.0f));
         for (int i = 0; i < ch.length; i++) {
             int value = countOccurrences(post, ch[i]);
@@ -321,8 +328,9 @@ public class StylometricAnalysisMain {
 
     /**
      * Loops through all aliases and construct their feature vectors
+     *
      * @param user
-     * @return 
+     * @return
      */
     public List<Float> createFeatureVectors(Alias user) {
         List<Float> featureVector = new ArrayList<>();
@@ -333,10 +341,18 @@ public class StylometricAnalysisMain {
         // Calculate each part of the "feature vector" for each individual post
         for (String post : user.getPosts()) {
             List<String> wordsInPost = extractWords(post);
+            int placeInFeatureVector = 0;
+
+            placeInFeatureVector = countFunctionWords(wordsInPost).size();
+
             user.addToFeatureVectorPostList(countFunctionWords(wordsInPost), 0, cnt);
-            user.addToFeatureVectorPostList(countWordLengths(wordsInPost), 293, cnt);
-            user.addToFeatureVectorPostList(countCharactersAZ(post), 313, cnt);
-            user.addToFeatureVectorPostList(countSpecialCharacters(post), 339, cnt);
+            user.addToFeatureVectorPostList(countWordLengths(wordsInPost), placeInFeatureVector, cnt);
+
+            placeInFeatureVector = placeInFeatureVector + countWordLengths(wordsInPost).size();
+            user.addToFeatureVectorPostList(countCharactersAZ(post), placeInFeatureVector, cnt);
+
+            placeInFeatureVector = placeInFeatureVector + countSpecialCharacters(post).size();
+            user.addToFeatureVectorPostList(countSpecialCharacters(post), placeInFeatureVector, cnt);
             cnt++;
             //   }
 
@@ -363,6 +379,7 @@ public class StylometricAnalysisMain {
 
     /**
      * Loops through all aliases and construct their feature vectors
+     *
      * @param user
      */
     public void createFeatureVectors(List<Alias> user) {
@@ -402,7 +419,7 @@ public class StylometricAnalysisMain {
     }
 
     public void createFeatureVectors() {
-        List<Float> featureVector = new ArrayList<>();
+        List<Float> featureVector;
         featVectorForAllAliases = new ArrayList<>();
         for (Alias alias : aliases) {
             int cnt = 0;
@@ -410,10 +427,18 @@ public class StylometricAnalysisMain {
             // Calculate each part of the "feature vector" for each individual post
             for (String post : alias.getPosts()) {
                 List<String> wordsInPost = extractWords(post);
+                int placeInFeatureVector = 0;
+
                 alias.addToFeatureVectorPostList(countFunctionWords(wordsInPost), 0, cnt);
-                alias.addToFeatureVectorPostList(countWordLengths(wordsInPost), 293, cnt);
-                alias.addToFeatureVectorPostList(countCharactersAZ(post), 313, cnt);
-                alias.addToFeatureVectorPostList(countSpecialCharacters(post), 339, cnt);
+                
+                placeInFeatureVector = countFunctionWords(wordsInPost).size();
+                alias.addToFeatureVectorPostList(countWordLengths(wordsInPost), placeInFeatureVector, cnt);
+
+                placeInFeatureVector = placeInFeatureVector + countWordLengths(wordsInPost).size();
+                alias.addToFeatureVectorPostList(countCharactersAZ(post), placeInFeatureVector, cnt);
+
+                placeInFeatureVector = placeInFeatureVector + countSpecialCharacters(post).size();
+                alias.addToFeatureVectorPostList(countSpecialCharacters(post), placeInFeatureVector, cnt);
                 cnt++;
             }
 
@@ -421,7 +446,7 @@ public class StylometricAnalysisMain {
 
             int numberOfPosts = alias.getPosts().size();
             int nrOfFeatures = featureVectorList.get(0).size();
-            featureVector = new ArrayList<Float>(Collections.nCopies(nrOfFeatures, 0.0f));
+            featureVector = new ArrayList<>(Collections.nCopies(nrOfFeatures, 0.0f));
             // Now we average over all posts to create a single feature vector for each alias
             for (int i = 0; i < nrOfFeatures; i++) {
                 float value = 0.0f;
@@ -431,10 +456,11 @@ public class StylometricAnalysisMain {
                 value /= numberOfPosts;
                 featureVector.set(i, value);
             }
+
             alias.setFeatureVector(featureVector);
             featVectorForAllAliases.add(featureVector);
         }
-        normalizeFeatureVector();
+        //normalizeFeatureVector();
     }
 
     /**
@@ -565,7 +591,7 @@ public class StylometricAnalysisMain {
         // Do the standardization of the feature vectors
         for (int i = 0; i < nrOfFeatures; i++) {
             for (int j = 0; j < aliases.size(); j++) {
-                if (stds.get(i) == 0) {
+                if (stds.get(i) == 0.0) {
                     aliases.get(j).setFeatureValue(i, 0.0f);
                 } else {
                     aliases.get(j).setFeatureValue(i, (float) ((featVectorForAllAliases.get(j).get(i) - avgs.get(i)) / stds.get(i)));
@@ -575,29 +601,104 @@ public class StylometricAnalysisMain {
 
     }
 
-   public static void main(String args[]) throws SQLException, IOException {
-        String text1 = "This is a litte test.";
-        //String text11 = "This is the second little text. I wonder if this will work out okay.";
+    public static void main(String args[]) throws SQLException, IOException {
+        String text1 = "Till mötet med Jonas Sjöstedt (V) kom han med gruppsekreteraren Emma Lennartsson, tidigare chefsekonom på Kommunal, som i dag är en av hans närmaste medarbetare. Men någon förhandling blev det aldrig, i stället förklarade Löfven att V inte kommer att ingå i en S-ledd regering.\n"
+                + "Han lämnade dock dörren öppen för ett formaliserat samarbete i riksdagen.\n"
+                + "– Jag tycker att Stefan Löfven har gjort ett stort misstag, sa en arg och ledsen Sjöstedt efteråt.\n"
+                + "Enligt Aftonbladets källor var allt planerat sedan länge.\n"
+                + "Stefan Löfven vill få till stånd ett politiskt underlag i riksdagen och hoppas förutom V också få stöd av både FP och C.\n"
+                + "– Att ta in V i regeringen skulle omöjliggöra ett samarbete med Folkpartiet och Centern, "
+                + "säger S-källan.\n"
+                + "Aftonbladets uppgiftslämnare menar att Löfven under en längre tid lagt pussel med en rad olika alternativ. Bland dessa att få V med på att stötta S i riksdagen genom andra tunga eftergifter. Allt ifrån att närma sig V i frågan om vinster i välfärdsbolag till att ordförandeposter i riksdagen sägs finnas med.\n"
+                + "Att Löfven lyckats locka tillbaka Margot Wallström till rikspolitiken ses också som en del i förhandlingsspelet. "
+                + "Hon är populär och har meriter som få kan mäta sig med. Och därmed anses utrikespolitiken, "
+                + "där bland annat V har skilda uppfattningar i flera frågor, vara säkrad."
+                + "Därmed förväntas inte heller partiets vänsterfalang reagera på Stefan Löfvens inslagna väg. Valresultatet ses som en "
+                + "framgång mot bakgrund av de tidigare katastrofala opinionssiffror partiet drogs med under "
+                + "Håkan Juholts sista tid som partiledare. Det allt överskuggande målet är i dag att förändra samhället."
+                + "Att både FP och C med emfas avvisat ett samarbete med S rycker man på axlarna åt, menar en toppsosse:"
+                + "– När krutröken efter valförlusten har lagt sig kommer de inse att landet måste regeras. Ingen vill ge SD inflytande och då måste Allianspartierna ställa upp. Vi tycker att en rad alliansföreträdare redan har mjuknat i tonen mot oss, inte minst Birgitta Ohlsson (FP, reds anm)."
+                + "Annat man menar talar till Löfvens fördel är att både Fredrik Reinfeldt och Anders Borg meddelat att de lämnar politiken och att Alliansen därmed riskerar att krackelera på sikt."
+                + "Till mötet med Jonas Sjöstedt (V) kom han med gruppsekreteraren Emma Lennartsson, tidigare chefsekonom på Kommunal, som i dag är en av hans närmaste medarbetare. Men någon förhandling blev det aldrig, i stället förklarade Löfven att V inte kommer att ingå i en S-ledd regering.\n"
+                + "Han lämnade dock dörren öppen för ett formaliserat samarbete i riksdagen.\n"
+                + "– Jag tycker att Stefan Löfven har gjort ett stort misstag, sa en arg och ledsen Sjöstedt efteråt.\n"
+                + "Enligt Aftonbladets källor var allt planerat sedan länge.\n"
+                + "Stefan Löfven vill få till stånd ett politiskt underlag i riksdagen och hoppas förutom V också få stöd av både FP och C.\n"
+                + "– Att ta in V i regeringen skulle omöjliggöra ett samarbete med Folkpartiet och Centern, "
+                + "säger S-källan.\n"
+                + "Aftonbladets uppgiftslämnare menar att Löfven under en längre tid lagt pussel med en rad olika alternativ. Bland dessa att få V med på att stötta S i riksdagen genom andra tunga eftergifter. Allt ifrån att närma sig V i frågan om vinster i välfärdsbolag till att ordförandeposter i riksdagen sägs finnas med.\n"
+                + "Att Löfven lyckats locka tillbaka Margot Wallström till rikspolitiken ses också som en del i förhandlingsspelet. "
+                + "Hon är populär och har meriter som få kan mäta sig med. Och därmed anses utrikespolitiken, "
+                + "där bland annat V har skilda uppfattningar i flera frågor, vara säkrad."
+                + "Därmed förväntas inte heller partiets vänsterfalang reagera på Stefan Löfvens inslagna väg. Valresultatet ses som en "
+                + "framgång mot bakgrund av de tidigare katastrofala opinionssiffror partiet drogs med under "
+                + "Håkan Juholts sista tid som partiledare. Det allt överskuggande målet är i dag att förändra samhället."
+                + "Att både FP och C med emfas avvisat ett samarbete med S rycker man på axlarna åt, menar en toppsosse:"
+                + "– När krutröken efter valförlusten har lagt sig kommer de inse att landet måste regeras. Ingen vill ge SD inflytande och då måste Allianspartierna ställa upp. Vi tycker att en rad alliansföreträdare redan har mjuknat i tonen mot oss, inte minst Birgitta Ohlsson (FP, reds anm)."
+                + "Annat man menar talar till Löfvens fördel är att både Fredrik Reinfeldt och Anders Borg meddelat att de lämnar politiken och att Alliansen därmed riskerar att krackelera på sikt."
+                + "Till mötet med Jonas Sjöstedt (V) kom han med gruppsekreteraren Emma Lennartsson, tidigare chefsekonom på Kommunal, som i dag är en av hans närmaste medarbetare. Men någon förhandling blev det aldrig, i stället förklarade Löfven att V inte kommer att ingå i en S-ledd regering.\n"
+                + "Han lämnade dock dörren öppen för ett formaliserat samarbete i riksdagen.\n"
+                + "– Jag tycker att Stefan Löfven har gjort ett stort misstag, sa en arg och ledsen Sjöstedt efteråt.\n"
+                + "Enligt Aftonbladets källor var allt planerat sedan länge.\n"
+                + "Stefan Löfven vill få till stånd ett politiskt underlag i riksdagen och hoppas förutom V också få stöd av både FP och C.\n"
+                + "– Att ta in V i regeringen skulle omöjliggöra ett samarbete med Folkpartiet och Centern, "
+                + "säger S-källan.\n"
+                + "Aftonbladets uppgiftslämnare menar att Löfven under en längre tid lagt pussel med en rad olika alternativ. Bland dessa att få V med på att stötta S i riksdagen genom andra tunga eftergifter. Allt ifrån att närma sig V i frågan om vinster i välfärdsbolag till att ordförandeposter i riksdagen sägs finnas med.\n"
+                + "Att Löfven lyckats locka tillbaka Margot Wallström till rikspolitiken ses också som en del i förhandlingsspelet. "
+                + "Hon är populär och har meriter som få kan mäta sig med. Och därmed anses utrikespolitiken, "
+                + "där bland annat V har skilda uppfattningar i flera frågor, vara säkrad."
+                + "Därmed förväntas inte heller partiets vänsterfalang reagera på Stefan Löfvens inslagna väg. Valresultatet ses som en "
+                + "framgång mot bakgrund av de tidigare katastrofala opinionssiffror partiet drogs med under "
+                + "Håkan Juholts sista tid som partiledare. Det allt överskuggande målet är i dag att förändra samhället."
+                + "Att både FP och C med emfas avvisat ett samarbete med S rycker man på axlarna åt, menar en toppsosse:"
+                + "– När krutröken efter valförlusten har lagt sig kommer de inse att landet måste regeras. Ingen vill ge SD inflytande och då måste Allianspartierna ställa upp. Vi tycker att en rad alliansföreträdare redan har mjuknat i tonen mot oss, inte minst Birgitta Ohlsson (FP, reds anm)."
+                + "Annat man menar talar till Löfvens fördel är att både Fredrik Reinfeldt och Anders Borg meddelat att de lämnar politiken och att Alliansen därmed riskerar att krackelera på sikt.;";
+        String text11 = "Till mötet Till med Jonas Sjöstedt.";
         //String text12 = "This is the second little text. I wonder if this will work out okay.";
-       // String text13 = "This is the second little text. I wonder if this will work out okay.";
-        String text2 = "Hi, how are you? This is a test...";
-        String text22 = "You, have you seen this video? Goooh!";
-        String text23 = "You, have you seen this video? Goooh!";
+        // String text13 = "This is the second little text. I wonder if this will work out okay.";
+        String text2 = "Till mötet Till med Jonas Sjöstedt (V) kom han med gruppsekreteraren Emma Lennartsson, tidigare chefsekonom på Kommunal, som i dag är en av hans närmaste medarbetare. Men någon förhandling blev det aldrig, i stället förklarade Löfven att V inte kommer att ingå i en S-ledd regering.\n"
+                + "Han lämnade dock dörren öppen för ett formaliserat samarbete i riksdagen.\n"
+                + "– Jag tycker att Stefan Löfven har gjort ett stort misstag, sa en arg och ledsen Sjöstedt efteråt.\n"
+                + "Enligt Aftonbladets källor var allt planerat sedan länge.\n"
+                + "Stefan Löfven vill få till stånd ett politiskt underlag i riksdagen och hoppas förutom V också få stöd av både FP och C.\n"
+                + "– Att ta in V i regeringen skulle omöjliggöra ett samarbete med Folkpartiet och Centern, "
+                + "säger S-källan.\n"
+                + "Aftonbladets uppgiftslämnare menar att Löfven under en längre tid lagt pussel med en rad olika alternativ. Bland dessa att få V med på att stötta S i riksdagen genom andra tunga eftergifter. Allt ifrån att närma sig Vi"
+                + " frågan om vinster i välfärdsbolag till att ordförandeposter i riksdagen sägs finnas med.\n"
+                + "Att Löfven lyckats locka tillbaka Margot \n"
+                + "Wallström till rikspolitiken ses också som en del i förhandlingsspelet. Hon är "
+                + "populär och har meriter som få kan mäta sig med. Och därmed anses utrikespolitiken, "
+                + "där bland annat V har skilda uppfattningar i flera frågor, vara säkrad.";
+        String text22 = " + \"Aftonbladets uppgiftslämnare menar att Löfven under en längre tid lagt pussel med en rad olika alternativ. Bland dessa att få V med på att stötta S i riksdagen genom andra tunga eftergifter. Allt ifrån att närma sig V i frågan om vinster i välfärdsbolag till att ordförandeposter i riksdagen sägs finnas med.\\n\"\n" +
+"                + \"Att Löfven lyckats locka tillbaka Margot Wallström till rikspolitiken ses också som en del i förhandlingsspelet. \"\n" +
+"                + \"Hon är populär och har meriter som få kan mäta sig med. Och därmed anses utrikespolitiken, \"\n" +
+"                + \"där bland annat V har skilda uppfattningar i flera frågor, vara säkrad.\"\n" +
+"                + \"Därmed förväntas inte heller partiets vänsterfalang reagera på Stefan Löfvens inslagna väg. Valresultatet ses som en \"\n" +
+"                + \"framgång mot bakgrund av de tidigare katastrofala opinionssiffror partiet drogs med under \"\n" +
+"                + \"Håkan Juholts sista tid som partiledare. Det allt överskuggande målet är i dag att förändra samhället.\"\n" +
+"                + \"Att både FP och C med emfas avvisat ett samarbete med S rycker man på axlarna åt, menar en toppsosse:\"\n" +
+"                + \"– När krutröken efter valförlusten har lagt sig kommer de inse att landet måste regeras. Ingen vill ge SD inflytande och då måste Allianspartierna ställa upp. Vi tycker att en rad alliansföreträdare redan har mjuknat i tonen mot oss, inte minst Birgitta Ohlsson (FP, reds anm).\"\n" +
+"                + \"Annat man menar talar till Löfvens fördel är att både Fredrik Reinfeldt och Anders Borg meddelat att de lämnar politiken och att Alliansen därmed riskerar att krackelera på sikt.";
+        String text23 = "Till mötet Till med Jonas Sjöstedt (V) kom han med gruppsekreteraren Emma Lennartsson, tidigare ";
         String text24 = "You, have you seen this video? Goooh!";
         List firstList = new ArrayList();
         List secondList = new ArrayList();
-        firstList.add(text1);
+        firstList.add(text11);
         //firstList.add(text11);
         //firstList.add(text12);
         //firstList.add(text13);
-        secondList.add(text2);
-        secondList.add(text22);
         secondList.add(text23);
-        secondList.add(text24);
+//        secondList.add(text22);
+//        secondList.add(text23);
+//        secondList.add(text24);
+
+        System.out.println("string size" + text1.length());
+        String filePath = System.getProperty("user.home") + IOProperties.INDIVIDUAL_USER_FILE_PATH;
 
         StylometricAnalysisMain init = new StylometricAnalysisMain();
-//        double stylo = init.returnStylo(firstList, secondList);
-        List<Float> stylo = init.executePostAnalysis(firstList);
+        double stylo = init.returnStylo(firstList, secondList);
+//        List<Float> stylo = init.executePostAnalysis(firstList);
+//        analyze.executeAnalysis(filePath);
         System.out.println("Stylo: " + stylo);
     }
 }
