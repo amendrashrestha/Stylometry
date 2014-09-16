@@ -103,8 +103,8 @@ public class StylometricAnalysisMain {
     public double executeStylo(List<Alias> aliasList) throws SQLException {
         this.aliases = aliasList;
         createFeatureVectors();
-        System.out.println("User1: " + aliases.get(0).getFeatureVector());
-        System.out.println("User2: " + aliases.get(1).getFeatureVector());
+        //System.out.println("User1: " + aliases.get(0).getFeatureVector());
+       // System.out.println("User2: " + aliases.get(1).getFeatureVector());
         
         double stylo = compareFeatureVectors(aliases.get(0).getFeatureVector(), aliases.get(1).getFeatureVector());
         return stylo;
@@ -683,7 +683,7 @@ public class StylometricAnalysisMain {
         String text24 = "You, have you seen this video? Goooh!";
         List firstList = new ArrayList();
         List secondList = new ArrayList();
-        firstList.add(text11);
+        firstList.add(text24);
         //firstList.add(text11);
         //firstList.add(text12);
         //firstList.add(text13);
