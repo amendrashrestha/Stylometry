@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.text.BreakIterator;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -66,7 +67,7 @@ public class StylometricAnalysisMain {
 
     private void loadDataFile(String path) {
         String filepath = System.getProperty("user.home") + path;
-        System.out.println(filepath);
+        //System.out.println(filepath);
     }
 
     public List<Float> executeAnalysis(String ID) throws IOException, SQLException {
@@ -126,10 +127,7 @@ public class StylometricAnalysisMain {
     public static List<String> extractWords(String text) {
         List<String> wordList = new ArrayList<>();
         String[] words = text.split("\\s+");
-        for (int i = 0; i < words.length; i++) {
-            words[i] = words[i].replaceAll("[^\\w]", "");
-            wordList.add(words[i]);
-        }
+        wordList.addAll(Arrays.asList(words)); // words[i] = words[i].replaceAll("[^\\w]", "");
         return wordList;
     }
 
@@ -598,13 +596,13 @@ public class StylometricAnalysisMain {
                     double average = avgs.get(i);
                     double stdDev = stds.get(i);
                     
-                    System.out.println("Feature Vector: " + featureVector);
+                   /* System.out.println("Feature Vector: " + featureVector);
                     System.out.println("Average" + i + " "+ average);
-                    System.out.println("Standard Deviation: " + stdDev);
+                    System.out.println("Standard Deviation: " + stdDev);*/
                     
                     float newFeat = (float) ((featureVector - average) / stdDev);
-                    System.out.println("New Feature: " + newFeat);
-                    System.out.println("---------------");
+                   /* System.out.println("New Feature: " + newFeat);
+                    System.out.println("---------------");*/
                     
                     aliases.get(j).setFeatureValue(i, newFeat);
                 }
@@ -704,7 +702,6 @@ public class StylometricAnalysisMain {
 //        secondList.add(text23);
 //        secondList.add(text24);
 
-        System.out.println("string size" + text1.length());
         String filePath = System.getProperty("user.home") + IOProperties.INDIVIDUAL_USER_FILE_PATH;
 
         StylometricAnalysisMain init = new StylometricAnalysisMain();
