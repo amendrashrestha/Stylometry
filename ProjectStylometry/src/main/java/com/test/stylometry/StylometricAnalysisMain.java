@@ -460,7 +460,7 @@ public class StylometricAnalysisMain {
             alias.setFeatureVector(featureVector);
             featVectorForAllAliases.add(featureVector);
         }
-        //normalizeFeatureVector();
+        normalizeFeatureVector();
     }
 
     /**
@@ -594,7 +594,19 @@ public class StylometricAnalysisMain {
                 if (stds.get(i) == 0.0) {
                     aliases.get(j).setFeatureValue(i, 0.0f);
                 } else {
-                    aliases.get(j).setFeatureValue(i, (float) ((featVectorForAllAliases.get(j).get(i) - avgs.get(i)) / stds.get(i)));
+                    float featureVector = featVectorForAllAliases.get(j).get(i);
+                    double average = avgs.get(i);
+                    double stdDev = stds.get(i);
+                    
+                    System.out.println("Feature Vector: " + featureVector);
+                    System.out.println("Average" + i + " "+ average);
+                    System.out.println("Standard Deviation: " + stdDev);
+                    
+                    float newFeat = (float) ((featureVector - average) / stdDev);
+                    System.out.println("New Feature: " + newFeat);
+                    System.out.println("---------------");
+                    
+                    aliases.get(j).setFeatureValue(i, newFeat);
                 }
             }
         }
@@ -679,8 +691,8 @@ public class StylometricAnalysisMain {
 "                + \"Att både FP och C med emfas avvisat ett samarbete med S rycker man på axlarna åt, menar en toppsosse:\"\n" +
 "                + \"– När krutröken efter valförlusten har lagt sig kommer de inse att landet måste regeras. Ingen vill ge SD inflytande och då måste Allianspartierna ställa upp. Vi tycker att en rad alliansföreträdare redan har mjuknat i tonen mot oss, inte minst Birgitta Ohlsson (FP, reds anm).\"\n" +
 "                + \"Annat man menar talar till Löfvens fördel är att både Fredrik Reinfeldt och Anders Borg meddelat att de lämnar politiken och att Alliansen därmed riskerar att krackelera på sikt.";
-        String text23 = "Till mötet Till med Jonas Sjöstedt (V) kom han med gruppsekreteraren Emma Lennartsson, tidigare ";
-        String text24 = "You, have you seen this video? Goooh!";
+        String text23 = "You, have you seen this video? Goooh!";
+        String text24 = "This is test";
         List firstList = new ArrayList();
         List secondList = new ArrayList();
         firstList.add(text24);
