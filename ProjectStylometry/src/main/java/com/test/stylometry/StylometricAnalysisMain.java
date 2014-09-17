@@ -611,103 +611,71 @@ public class StylometricAnalysisMain {
 
     }
 
-    public static void main(String args[]) throws SQLException, IOException {
-        String text1 = "Till mötet med Jonas Sjöstedt (V) kom han med gruppsekreteraren Emma Lennartsson, tidigare chefsekonom på Kommunal, som i dag är en av hans närmaste medarbetare. Men någon förhandling blev det aldrig, i stället förklarade Löfven att V inte kommer att ingå i en S-ledd regering.\n"
-                + "Han lämnade dock dörren öppen för ett formaliserat samarbete i riksdagen.\n"
-                + "– Jag tycker att Stefan Löfven har gjort ett stort misstag, sa en arg och ledsen Sjöstedt efteråt.\n"
-                + "Enligt Aftonbladets källor var allt planerat sedan länge.\n"
-                + "Stefan Löfven vill få till stånd ett politiskt underlag i riksdagen och hoppas förutom V också få stöd av både FP och C.\n"
-                + "– Att ta in V i regeringen skulle omöjliggöra ett samarbete med Folkpartiet och Centern, "
-                + "säger S-källan.\n"
-                + "Aftonbladets uppgiftslämnare menar att Löfven under en längre tid lagt pussel med en rad olika alternativ. Bland dessa att få V med på att stötta S i riksdagen genom andra tunga eftergifter. Allt ifrån att närma sig V i frågan om vinster i välfärdsbolag till att ordförandeposter i riksdagen sägs finnas med.\n"
-                + "Att Löfven lyckats locka tillbaka Margot Wallström till rikspolitiken ses också som en del i förhandlingsspelet. "
-                + "Hon är populär och har meriter som få kan mäta sig med. Och därmed anses utrikespolitiken, "
-                + "där bland annat V har skilda uppfattningar i flera frågor, vara säkrad."
-                + "Därmed förväntas inte heller partiets vänsterfalang reagera på Stefan Löfvens inslagna väg. Valresultatet ses som en "
-                + "framgång mot bakgrund av de tidigare katastrofala opinionssiffror partiet drogs med under "
-                + "Håkan Juholts sista tid som partiledare. Det allt överskuggande målet är i dag att förändra samhället."
-                + "Att både FP och C med emfas avvisat ett samarbete med S rycker man på axlarna åt, menar en toppsosse:"
-                + "– När krutröken efter valförlusten har lagt sig kommer de inse att landet måste regeras. Ingen vill ge SD inflytande och då måste Allianspartierna ställa upp. Vi tycker att en rad alliansföreträdare redan har mjuknat i tonen mot oss, inte minst Birgitta Ohlsson (FP, reds anm)."
-                + "Annat man menar talar till Löfvens fördel är att både Fredrik Reinfeldt och Anders Borg meddelat att de lämnar politiken och att Alliansen därmed riskerar att krackelera på sikt."
-                + "Till mötet med Jonas Sjöstedt (V) kom han med gruppsekreteraren Emma Lennartsson, tidigare chefsekonom på Kommunal, som i dag är en av hans närmaste medarbetare. Men någon förhandling blev det aldrig, i stället förklarade Löfven att V inte kommer att ingå i en S-ledd regering.\n"
-                + "Han lämnade dock dörren öppen för ett formaliserat samarbete i riksdagen.\n"
-                + "– Jag tycker att Stefan Löfven har gjort ett stort misstag, sa en arg och ledsen Sjöstedt efteråt.\n"
-                + "Enligt Aftonbladets källor var allt planerat sedan länge.\n"
-                + "Stefan Löfven vill få till stånd ett politiskt underlag i riksdagen och hoppas förutom V också få stöd av både FP och C.\n"
-                + "– Att ta in V i regeringen skulle omöjliggöra ett samarbete med Folkpartiet och Centern, "
-                + "säger S-källan.\n"
-                + "Aftonbladets uppgiftslämnare menar att Löfven under en längre tid lagt pussel med en rad olika alternativ. Bland dessa att få V med på att stötta S i riksdagen genom andra tunga eftergifter. Allt ifrån att närma sig V i frågan om vinster i välfärdsbolag till att ordförandeposter i riksdagen sägs finnas med.\n"
-                + "Att Löfven lyckats locka tillbaka Margot Wallström till rikspolitiken ses också som en del i förhandlingsspelet. "
-                + "Hon är populär och har meriter som få kan mäta sig med. Och därmed anses utrikespolitiken, "
-                + "där bland annat V har skilda uppfattningar i flera frågor, vara säkrad."
-                + "Därmed förväntas inte heller partiets vänsterfalang reagera på Stefan Löfvens inslagna väg. Valresultatet ses som en "
-                + "framgång mot bakgrund av de tidigare katastrofala opinionssiffror partiet drogs med under "
-                + "Håkan Juholts sista tid som partiledare. Det allt överskuggande målet är i dag att förändra samhället."
-                + "Att både FP och C med emfas avvisat ett samarbete med S rycker man på axlarna åt, menar en toppsosse:"
-                + "– När krutröken efter valförlusten har lagt sig kommer de inse att landet måste regeras. Ingen vill ge SD inflytande och då måste Allianspartierna ställa upp. Vi tycker att en rad alliansföreträdare redan har mjuknat i tonen mot oss, inte minst Birgitta Ohlsson (FP, reds anm)."
-                + "Annat man menar talar till Löfvens fördel är att både Fredrik Reinfeldt och Anders Borg meddelat att de lämnar politiken och att Alliansen därmed riskerar att krackelera på sikt."
-                + "Till mötet med Jonas Sjöstedt (V) kom han med gruppsekreteraren Emma Lennartsson, tidigare chefsekonom på Kommunal, som i dag är en av hans närmaste medarbetare. Men någon förhandling blev det aldrig, i stället förklarade Löfven att V inte kommer att ingå i en S-ledd regering.\n"
-                + "Han lämnade dock dörren öppen för ett formaliserat samarbete i riksdagen.\n"
-                + "– Jag tycker att Stefan Löfven har gjort ett stort misstag, sa en arg och ledsen Sjöstedt efteråt.\n"
-                + "Enligt Aftonbladets källor var allt planerat sedan länge.\n"
-                + "Stefan Löfven vill få till stånd ett politiskt underlag i riksdagen och hoppas förutom V också få stöd av både FP och C.\n"
-                + "– Att ta in V i regeringen skulle omöjliggöra ett samarbete med Folkpartiet och Centern, "
-                + "säger S-källan.\n"
-                + "Aftonbladets uppgiftslämnare menar att Löfven under en längre tid lagt pussel med en rad olika alternativ. Bland dessa att få V med på att stötta S i riksdagen genom andra tunga eftergifter. Allt ifrån att närma sig V i frågan om vinster i välfärdsbolag till att ordförandeposter i riksdagen sägs finnas med.\n"
-                + "Att Löfven lyckats locka tillbaka Margot Wallström till rikspolitiken ses också som en del i förhandlingsspelet. "
-                + "Hon är populär och har meriter som få kan mäta sig med. Och därmed anses utrikespolitiken, "
-                + "där bland annat V har skilda uppfattningar i flera frågor, vara säkrad."
-                + "Därmed förväntas inte heller partiets vänsterfalang reagera på Stefan Löfvens inslagna väg. Valresultatet ses som en "
-                + "framgång mot bakgrund av de tidigare katastrofala opinionssiffror partiet drogs med under "
-                + "Håkan Juholts sista tid som partiledare. Det allt överskuggande målet är i dag att förändra samhället."
-                + "Att både FP och C med emfas avvisat ett samarbete med S rycker man på axlarna åt, menar en toppsosse:"
-                + "– När krutröken efter valförlusten har lagt sig kommer de inse att landet måste regeras. Ingen vill ge SD inflytande och då måste Allianspartierna ställa upp. Vi tycker att en rad alliansföreträdare redan har mjuknat i tonen mot oss, inte minst Birgitta Ohlsson (FP, reds anm)."
-                + "Annat man menar talar till Löfvens fördel är att både Fredrik Reinfeldt och Anders Borg meddelat att de lämnar politiken och att Alliansen därmed riskerar att krackelera på sikt.;";
-        String text11 = "Till mötet Till med Jonas Sjöstedt.";
-        //String text12 = "This is the second little text. I wonder if this will work out okay.";
-        // String text13 = "This is the second little text. I wonder if this will work out okay.";
-        String text2 = "Till mötet Till med Jonas Sjöstedt (V) kom han med gruppsekreteraren Emma Lennartsson, tidigare chefsekonom på Kommunal, som i dag är en av hans närmaste medarbetare. Men någon förhandling blev det aldrig, i stället förklarade Löfven att V inte kommer att ingå i en S-ledd regering.\n"
-                + "Han lämnade dock dörren öppen för ett formaliserat samarbete i riksdagen.\n"
-                + "– Jag tycker att Stefan Löfven har gjort ett stort misstag, sa en arg och ledsen Sjöstedt efteråt.\n"
-                + "Enligt Aftonbladets källor var allt planerat sedan länge.\n"
-                + "Stefan Löfven vill få till stånd ett politiskt underlag i riksdagen och hoppas förutom V också få stöd av både FP och C.\n"
-                + "– Att ta in V i regeringen skulle omöjliggöra ett samarbete med Folkpartiet och Centern, "
-                + "säger S-källan.\n"
-                + "Aftonbladets uppgiftslämnare menar att Löfven under en längre tid lagt pussel med en rad olika alternativ. Bland dessa att få V med på att stötta S i riksdagen genom andra tunga eftergifter. Allt ifrån att närma sig Vi"
-                + " frågan om vinster i välfärdsbolag till att ordförandeposter i riksdagen sägs finnas med.\n"
-                + "Att Löfven lyckats locka tillbaka Margot \n"
-                + "Wallström till rikspolitiken ses också som en del i förhandlingsspelet. Hon är "
-                + "populär och har meriter som få kan mäta sig med. Och därmed anses utrikespolitiken, "
-                + "där bland annat V har skilda uppfattningar i flera frågor, vara säkrad.";
-        String text22 = " + \"Aftonbladets uppgiftslämnare menar att Löfven under en längre tid lagt pussel med en rad olika alternativ. Bland dessa att få V med på att stötta S i riksdagen genom andra tunga eftergifter. Allt ifrån att närma sig V i frågan om vinster i välfärdsbolag till att ordförandeposter i riksdagen sägs finnas med.\\n\"\n" +
-"                + \"Att Löfven lyckats locka tillbaka Margot Wallström till rikspolitiken ses också som en del i förhandlingsspelet. \"\n" +
-"                + \"Hon är populär och har meriter som få kan mäta sig med. Och därmed anses utrikespolitiken, \"\n" +
-"                + \"där bland annat V har skilda uppfattningar i flera frågor, vara säkrad.\"\n" +
-"                + \"Därmed förväntas inte heller partiets vänsterfalang reagera på Stefan Löfvens inslagna väg. Valresultatet ses som en \"\n" +
-"                + \"framgång mot bakgrund av de tidigare katastrofala opinionssiffror partiet drogs med under \"\n" +
-"                + \"Håkan Juholts sista tid som partiledare. Det allt överskuggande målet är i dag att förändra samhället.\"\n" +
-"                + \"Att både FP och C med emfas avvisat ett samarbete med S rycker man på axlarna åt, menar en toppsosse:\"\n" +
-"                + \"– När krutröken efter valförlusten har lagt sig kommer de inse att landet måste regeras. Ingen vill ge SD inflytande och då måste Allianspartierna ställa upp. Vi tycker att en rad alliansföreträdare redan har mjuknat i tonen mot oss, inte minst Birgitta Ohlsson (FP, reds anm).\"\n" +
-"                + \"Annat man menar talar till Löfvens fördel är att både Fredrik Reinfeldt och Anders Borg meddelat att de lämnar politiken och att Alliansen därmed riskerar att krackelera på sikt.";
-        String text23 = "You, have you seen this video? Goooh!";
-        String text24 = "This is test";
-        List firstList = new ArrayList();
-        List secondList = new ArrayList();
-        firstList.add(text24);
-        //firstList.add(text11);
-        //firstList.add(text12);
-        //firstList.add(text13);
-        secondList.add(text23);
-//        secondList.add(text22);
-//        secondList.add(text23);
-//        secondList.add(text24);
+    public static void main(String[] args) throws SQLException {
+        StylometricAnalysisMain test = new StylometricAnalysisMain();
+        Alias dulney1 = new Alias("Dulney1");
 
-        String filePath = System.getProperty("user.home") + IOProperties.INDIVIDUAL_USER_FILE_PATH;
+        String text1 = "Invandrare är absolut värst på att ljuga, manipulera, köra fulsälj, hetsa etc. "
+                + "De är helt skamlösa och passar därför extremt bra in i denna bransch. Många av dem "
+                + "saknade helt moraliska kompasser och det i en bransch där det redan är "
+                + "illa ställt." +"araber har våldsammare gener" + "invandrare är absolut värst på att ljuga,"
+                + " manipulera, köra fulsälj, hetsa etc";
 
-        StylometricAnalysisMain init = new StylometricAnalysisMain();
-        double stylo = init.returnStylo(firstList, secondList);
-//        List<Float> stylo = init.executePostAnalysis(firstList);
-//        analyze.executeAnalysis(filePath);
-        System.out.println("Stylo: " + stylo);
+        String text12 ="(namnet på den dömde) är väl ett zigenarnamn va? Känns viktigt att påpeka isf"
+                + "även om födslotalen bland muslimer som bott ett längre tag i t.ex. Sverige eller Danmark "
+                + "minskar så motverkas det ändå att man, i alla fall i Sveriges fall, importerar "
+                + "nya muslimer i tiotusental som kommer att föda lika många barn som de muslimer "+ "Man"
+                + " får inte missa en sådan grundläggande sak, här i Sverige har ";
+
+        String text13= "vi fortfarande en massinvandring som är bortom all vett och sans, vi har "
+                + "knappt börjat oroa oss för nästa steg som är att vi blir 'utfödda' i vårt "
+                + "eget land, och vi betalar dem för det genom generöst vårdnadsbidrag och "
+                + "barnbidrag." + "Systemet måste göras om helt och hållet, alla bidrag ska "
+                + "omvandlas till skattelättnader eftersom vi då åtminstone träffar de som "
+                + "arbetar(dvs svenskar till största delen). De som inte arbetar kommer ";
+
+               String text14 = "alltså inte att tjäna något på att föda fler barn. Det är en början." + "Vedervärdigt, det "
+                + "är bara en tidsfråga innan hela fasaden krackelerar fullständigt och Svensson på allvar inser "
+                + "att deras äldre ligger och dör i sina egna kroppsvätskor för att Ali 23 år ska kunna bli servad "
+                + "med mat lagad i ett lyxkök." + "VAKNA SVERIGE FÖR I HELV...." + "vad som hänt är att man "
+                + "försummar sin skolplikt, man utnyttjar välfärdssystemen hänsynslöst, man har ett "
+                + "bemötande mot svenskar som är under all kritik.";
+
+
+        dulney1.addPost(text1);
+        dulney1.addPost(text12);
+        dulney1.addPost(text13);
+        dulney1.addPost(text14);
+
+        test.aliases.add(dulney1);
+
+        Alias dulney2 = new Alias("Dulney2");
+
+
+          String text2 = "Paulina Neuding skrev nyligen en kolumn i SvD om hur medier och folkpartister"
+                + "(för vilken gång i ordningen?) vilseleder allmänheten om statusen kring mångkultur och "
+                + "invandring";
+
+
+
+          dulney2.addPost(text13);
+        dulney2.addPost(text14);
+        dulney2.addPost(text1);
+        dulney2.addPost(text12);
+
+        test.aliases.add(dulney2);
+
+
+        test.createFeatureVectors();
+
+        for (Alias alias : test.aliases) {
+            List<Float> featVec = alias.getFeatureVector();
+            System.out.println("Feature Vector" + featVec);
+            System.out.println("------------");
+        }
+
+        test.compareAllPairsOfAliases();
+        System.out.println("The best matching alias is: " + test.findBestMatch(0));
+
     }
 }
