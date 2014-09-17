@@ -105,8 +105,8 @@ public class StylometricAnalysisMain {
         this.aliases = aliasList;
         createFeatureVectors();
         //System.out.println("User1: " + aliases.get(0).getFeatureVector());
-       // System.out.println("User2: " + aliases.get(1).getFeatureVector());
-        
+        // System.out.println("User2: " + aliases.get(1).getFeatureVector());
+
         double stylo = compareFeatureVectors(aliases.get(0).getFeatureVector(), aliases.get(1).getFeatureVector());
         return stylo;
     }
@@ -165,16 +165,13 @@ public class StylometricAnalysisMain {
      */
     public ArrayList<Float> countFunctionWords(List<String> words) {
         ArrayList<Float> tmpCounter = new ArrayList<>(Collections.nCopies(functionWords.size(), 0.0f));	// Initialize to zero
-        
-        for (String word1 : words) {
-            String word = word1.toLowerCase();
-            for (int j = 0; j < functionWords.size(); j++) {
-                if (word.equals(functionWords.get(j))) {
-                    float value = tmpCounter.get(j);
-                    value++;
-                    tmpCounter.set(j, value);
-                    break;
-                }
+
+        for (String word : words) {
+            if (functionWords.contains(word)) {
+                int place = functionWords.indexOf(word);
+                float value = tmpCounter.get(place);
+                value++;
+                tmpCounter.set(place, value);
             }
         }
         // "Normalize" the values by dividing with length of the post (nr of words in the post)
@@ -428,7 +425,7 @@ public class StylometricAnalysisMain {
                 int placeInFeatureVector = 0;
 
                 alias.addToFeatureVectorPostList(countFunctionWords(wordsInPost), 0, cnt);
-                
+
                 placeInFeatureVector = countFunctionWords(wordsInPost).size();
                 alias.addToFeatureVectorPostList(countWordLengths(wordsInPost), placeInFeatureVector, cnt);
 
@@ -595,15 +592,14 @@ public class StylometricAnalysisMain {
                     float featureVector = featVectorForAllAliases.get(j).get(i);
                     double average = avgs.get(i);
                     double stdDev = stds.get(i);
-                    
-                   /* System.out.println("Feature Vector: " + featureVector);
+
+                    /* System.out.println("Feature Vector: " + featureVector);
                     System.out.println("Average" + i + " "+ average);
                     System.out.println("Standard Deviation: " + stdDev);*/
-                    
                     float newFeat = (float) ((featureVector - average) / stdDev);
-                   /* System.out.println("New Feature: " + newFeat);
+                    /* System.out.println("New Feature: " + newFeat);
                     System.out.println("---------------");*/
-                    
+
                     aliases.get(j).setFeatureValue(i, newFeat);
                 }
             }
@@ -618,29 +614,28 @@ public class StylometricAnalysisMain {
         String text1 = "Invandrare är absolut värst på att ljuga, manipulera, köra fulsälj, hetsa etc. "
                 + "De är helt skamlösa och passar därför extremt bra in i denna bransch. Många av dem "
                 + "saknade helt moraliska kompasser och det i en bransch där det redan är "
-                + "illa ställt." +"araber har våldsammare gener" + "invandrare är absolut värst på att ljuga,"
+                + "illa ställt." + "araber har våldsammare gener" + "invandrare är absolut värst på att ljuga,"
                 + " manipulera, köra fulsälj, hetsa etc";
 
-        String text12 ="(namnet på den dömde) är väl ett zigenarnamn va? Känns viktigt att påpeka isf"
+        String text12 = "(namnet på den dömde) är väl ett zigenarnamn va? Känns viktigt att påpeka isf"
                 + "även om födslotalen bland muslimer som bott ett längre tag i t.ex. Sverige eller Danmark "
                 + "minskar så motverkas det ändå att man, i alla fall i Sveriges fall, importerar "
-                + "nya muslimer i tiotusental som kommer att föda lika många barn som de muslimer "+ "Man"
+                + "nya muslimer i tiotusental som kommer att föda lika många barn som de muslimer " + "Man"
                 + " får inte missa en sådan grundläggande sak, här i Sverige har ";
 
-        String text13= "vi fortfarande en massinvandring som är bortom all vett och sans, vi har "
+        String text13 = "vi fortfarande en massinvandring som är bortom all vett och sans, vi har "
                 + "knappt börjat oroa oss för nästa steg som är att vi blir 'utfödda' i vårt "
                 + "eget land, och vi betalar dem för det genom generöst vårdnadsbidrag och "
                 + "barnbidrag." + "Systemet måste göras om helt och hållet, alla bidrag ska "
                 + "omvandlas till skattelättnader eftersom vi då åtminstone träffar de som "
                 + "arbetar(dvs svenskar till största delen). De som inte arbetar kommer ";
 
-               String text14 = "alltså inte att tjäna något på att föda fler barn. Det är en början." + "Vedervärdigt, det "
+        String text14 = "alltså inte att tjäna något på att föda fler barn. Det är en början." + "Vedervärdigt, det "
                 + "är bara en tidsfråga innan hela fasaden krackelerar fullständigt och Svensson på allvar inser "
                 + "att deras äldre ligger och dör i sina egna kroppsvätskor för att Ali 23 år ska kunna bli servad "
                 + "med mat lagad i ett lyxkök." + "VAKNA SVERIGE FÖR I HELV...." + "vad som hänt är att man "
                 + "försummar sin skolplikt, man utnyttjar välfärdssystemen hänsynslöst, man har ett "
                 + "bemötande mot svenskar som är under all kritik.";
-
 
         dulney1.addPost(text1);
         dulney1.addPost(text12);
@@ -651,20 +646,16 @@ public class StylometricAnalysisMain {
 
         Alias dulney2 = new Alias("Dulney2");
 
-
-          String text2 = "Paulina Neuding skrev nyligen en kolumn i SvD om hur medier och folkpartister"
+        String text2 = "Paulina Neuding skrev nyligen en kolumn i SvD om hur medier och folkpartister"
                 + "(för vilken gång i ordningen?) vilseleder allmänheten om statusen kring mångkultur och "
                 + "invandring";
 
-
-
-          dulney2.addPost(text13);
+        dulney2.addPost(text13);
         dulney2.addPost(text14);
         dulney2.addPost(text1);
         dulney2.addPost(text12);
 
         test.aliases.add(dulney2);
-
 
         test.createFeatureVectors();
 
