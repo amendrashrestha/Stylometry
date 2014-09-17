@@ -369,7 +369,6 @@ public class StylometricAnalysisMain {
             featVectorForAllAliases.add(featureVector);
         }
         return featureVector;
-        //normalizeFeatureVector();
     }
 
     /**
