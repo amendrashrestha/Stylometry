@@ -62,13 +62,7 @@ public class StylometricAnalysisMain {
     public StylometricAnalysisMain() {
         System.out.println("UserPath: " + System.getProperty("user.dir"));
         loadFunctionWords(IOProperties.FUNCTION_WORDS);
-        loadDataFile(IOProperties.INDIVIDUAL_USER_FILE_PATH);
         aliases = new ArrayList<>();
-    }
-
-    private void loadDataFile(String path) {
-        String filepath = System.getProperty("user.home") + path;
-        //System.out.println(filepath);
     }
 
     public List<Float> executeAnalysis(String ID) throws IOException, SQLException {
