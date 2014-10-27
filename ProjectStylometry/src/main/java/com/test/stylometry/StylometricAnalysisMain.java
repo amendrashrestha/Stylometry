@@ -60,6 +60,7 @@ public class StylometricAnalysisMain {
     private List<List<Float>> featVectorForAllAliases;
 
     public StylometricAnalysisMain() {
+        System.out.println("UserPath: " + System.getProperty("user.dir"));
         loadFunctionWords(IOProperties.FUNCTION_WORDS);
         loadDataFile(IOProperties.INDIVIDUAL_USER_FILE_PATH);
         aliases = new ArrayList<>();
@@ -423,16 +424,21 @@ public class StylometricAnalysisMain {
                 List<String> wordsInPost = extractWords(post);
                 int placeInFeatureVector = 0;
 
+                placeInFeatureVector = countFunctionWords(wordsInPost).size();
+                System.out.println("FunctionWOrdSize: " + placeInFeatureVector);
                 alias.addToFeatureVectorPostList(countFunctionWords(wordsInPost), 0, cnt);
 
-                placeInFeatureVector = countFunctionWords(wordsInPost).size();
                 alias.addToFeatureVectorPostList(countWordLengths(wordsInPost), placeInFeatureVector, cnt);
-
                 placeInFeatureVector = placeInFeatureVector + countWordLengths(wordsInPost).size();
-                alias.addToFeatureVectorPostList(countCharactersAZ(post), placeInFeatureVector, cnt);
+                System.out.println("WordLengthSize: " + placeInFeatureVector);
 
-                placeInFeatureVector = placeInFeatureVector + countSpecialCharacters(post).size();
+                alias.addToFeatureVectorPostList(countCharactersAZ(post), placeInFeatureVector, cnt);
+                placeInFeatureVector = placeInFeatureVector + countCharactersAZ(post).size();
+                System.out.println("DigitNCharacters: " + placeInFeatureVector);
+
                 alias.addToFeatureVectorPostList(countSpecialCharacters(post), placeInFeatureVector, cnt);
+                placeInFeatureVector = placeInFeatureVector + countSpecialCharacters(post).size();
+                System.out.println("Special Character: " + placeInFeatureVector);
                 cnt++;
             }
 
@@ -608,6 +614,9 @@ public class StylometricAnalysisMain {
 
     public static void main(String[] args) throws SQLException {
         StylometricAnalysisMain test = new StylometricAnalysisMain();
+        List<String> alias1Post = new ArrayList<String>();
+        List<String> alias2Post = new ArrayList<String>();
+
         Alias dulney1 = new Alias("Dulney1");
 
         String text1 = "Invandrare är absolut värst på att ljuga, manipulera, köra fulsälj, hetsa etc. "
@@ -636,10 +645,12 @@ public class StylometricAnalysisMain {
                 + "försummar sin skolplikt, man utnyttjar välfärdssystemen hänsynslöst, man har ett "
                 + "bemötande mot svenskar som är under all kritik.";
 
-        dulney1.addPost(text1);
-        dulney1.addPost(text12);
-        dulney1.addPost(text13);
-        dulney1.addPost(text14);
+        alias1Post.add(text1);
+        alias1Post.add(text12);
+        alias1Post.add(text13);
+        alias1Post.add(text14);
+
+        dulney1.setPosts(alias1Post);
 
         test.aliases.add(dulney1);
 
@@ -649,10 +660,12 @@ public class StylometricAnalysisMain {
                 + "(för vilken gång i ordningen?) vilseleder allmänheten om statusen kring mångkultur och "
                 + "invandring";
 
-        dulney2.addPost(text13);
-        dulney2.addPost(text14);
-        dulney2.addPost(text1);
-        dulney2.addPost(text12);
+        alias2Post.add(text13);
+        alias2Post.add(text14);
+        alias2Post.add(text2);
+        alias2Post.add(text12);
+
+        dulney2.setPosts(alias2Post);
 
         test.aliases.add(dulney2);
 

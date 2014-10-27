@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class Alias {
 
-     private List<Float> featureVector;
+    private List<Float> featureVector;
     private int nrOfFeatures;
     private String user;
     private String type;
@@ -25,10 +25,12 @@ public class Alias {
         this.user = userID;
         featureVector = new ArrayList<Float>();
         featureVectorPostList = new ArrayList<ArrayList<Float>>();
+        
+        setNrOfFeatures(456);
     }
 
     public Alias() {
-        setNrOfFeatures(448);
+        setNrOfFeatures(456);
     }
 
     @Override
@@ -63,12 +65,12 @@ public class Alias {
     public void setPosts(List<String> posts) {
         this.posts = posts;
     }
-    
-    public String getSinglePost(){
+
+    public String getSinglePost() {
         return singlePost;
     }
-    
-    public void setSinglePost(String post){
+
+    public void setSinglePost(String post) {
         this.singlePost = post;
     }
 
@@ -77,10 +79,10 @@ public class Alias {
     }
 
     public void addToFeatureVectorPostList(ArrayList<Float> freqDist, int startIndex, int index) {
-         for (Float freqDist1 : freqDist) {
-             featureVectorPostList.get(index).set(startIndex, freqDist1);
-             startIndex++;
-         }
+        for (Float freqDist1 : freqDist) {
+            featureVectorPostList.get(index).set(startIndex, freqDist1);
+            startIndex++;
+        }
     }
 
     public List<Float> getFeatureVector() {
@@ -123,8 +125,8 @@ public class Alias {
 
         double[] rr = new double[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-        
-        for(String postHour : postTime){
+
+        for (String postHour : postTime) {
             String[] time = postHour.split(":");
             int hr = Integer.parseInt(time[0]);
             rr[hr]++;
