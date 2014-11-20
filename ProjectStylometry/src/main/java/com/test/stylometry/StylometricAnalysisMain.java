@@ -207,7 +207,7 @@ public class StylometricAnalysisMain {
      */
     public ArrayList<Float> countSpecialCharacters(String post) {
         post = post.toLowerCase();	// Upper or lower case does not matter, so make all letters lower case first...
-        char[] ch = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '?', '!', ',', ';', ':', '(', ')', '"', '-', '´'};
+        char[] ch = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '?', '!', ',', ';', ':', '(', ')', '"', '-', '\''};
         ArrayList<Float> tmpCounter = new ArrayList<>(Collections.nCopies(ch.length, 0.0f));
         for (int i = 0; i < ch.length; i++) {
             int value = countOccurrences(post, ch[i]);
@@ -419,20 +419,20 @@ public class StylometricAnalysisMain {
                 int placeInFeatureVector = 0;
 
                 placeInFeatureVector = countFunctionWords(wordsInPost).size();
-                System.out.println("FunctionWOrdSize: " + placeInFeatureVector);
+//                System.out.println("FunctionWOrdSize: " + placeInFeatureVector);
                 alias.addToFeatureVectorPostList(countFunctionWords(wordsInPost), 0, cnt);
 
                 alias.addToFeatureVectorPostList(countWordLengths(wordsInPost), placeInFeatureVector, cnt);
                 placeInFeatureVector = placeInFeatureVector + countWordLengths(wordsInPost).size();
-                System.out.println("WordLengthSize: " + placeInFeatureVector);
+//                System.out.println("WordLengthSize: " + placeInFeatureVector);
 
                 alias.addToFeatureVectorPostList(countCharactersAZ(post), placeInFeatureVector, cnt);
                 placeInFeatureVector = placeInFeatureVector + countCharactersAZ(post).size();
-                System.out.println("DigitNCharacters: " + placeInFeatureVector);
+//                System.out.println("DigitNCharacters: " + placeInFeatureVector);
 
                 alias.addToFeatureVectorPostList(countSpecialCharacters(post), placeInFeatureVector, cnt);
                 placeInFeatureVector = placeInFeatureVector + countSpecialCharacters(post).size();
-                System.out.println("Special Character: " + placeInFeatureVector);
+//                System.out.println("Special Character: " + placeInFeatureVector);
                 cnt++;
             }
 
